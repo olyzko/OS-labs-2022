@@ -1,0 +1,21 @@
+<component name="ArtifactManager">
+  <artifact name="Lab1F:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Lab1F</output-path>
+    <root id="root">
+      <element id="archive" name="Lab1.jar">
+        <element id="directory" name="META-INF">
+          <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/ProcessF/META-INF/MANIFEST.MF" />
+        </element>
+        <element id="module-output" name="Lab1" />
+      </element>
+      <element id="library" level="project" name="Maven: com.kohlschutter.junixsocket:junixsocket-common:2.5.2" />
+      <element id="library" level="project" name="Maven: com.kohlschutter.junixsocket:junixsocket-native-common:2.5.2" />
+      <element id="library" level="project" name="Maven: org.opentest4j:opentest4j:1.2.0" />
+      <element id="library" level="project" name="Maven: org.junit.jupiter:junit-jupiter-api:5.9.0" />
+      <element id="library" level="project" name="Maven: org.junit.platform:junit-platform-commons:1.9.0" />
+      <element id="library" level="project" name="Maven: org.apiguardian:apiguardian-api:1.1.2" />
+      <element id="library" level="project" name="Maven: org.junit.platform:junit-platform-engine:1.9.0" />
+      <element id="library" level="project" name="Maven: org.junit.jupiter:junit-jupiter-engine:5.9.0" />
+    </root>
+  </artifact>
+</component>

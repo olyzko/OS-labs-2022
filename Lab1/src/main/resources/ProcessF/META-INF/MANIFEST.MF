@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Main-Class: clients.ProcessF
+Class-Path: junixsocket-common-2.5.2.jar junixsocket-native-common-2.5.2
+ .jar opentest4j-1.2.0.jar junit-jupiter-api-5.9.0.jar junit-platform-co
+ mmons-1.9.0.jar apiguardian-api-1.1.2.jar junit-platform-engine-1.9.0.j
+ ar junit-jupiter-engine-5.9.0.jar
+

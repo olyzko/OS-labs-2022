@@ -5,6 +5,7 @@
 package sched;
 
 import java.util.Comparator;
+import java.util.PriorityQueue;
 import java.util.Vector;
 import java.io.*;
 
@@ -32,7 +33,8 @@ public class SchedulingAlgorithm {
   public static Results Run(int runtime, Vector processVector, Results result) {
     int i = 0;
     int comptime = 0;
-    int currentProcess = 0;
+    int currentProcessId = 0;
+    int currentProcessTime = 0;
     int previousProcess = 0;
     int size = processVector.size();
     int completed = 0;
@@ -46,42 +48,51 @@ public class SchedulingAlgorithm {
       //BufferedWriter out = new BufferedWriter(new FileWriter(resultsFile));
       //OutputStream out = new FileOutputStream(resultsFile);
       PrintStream out = new PrintStream(new FileOutputStream(processesFile));
-      sProcess process = (sProcess) processVector.elementAt(currentProcess);
-      out.println("Process: " + currentProcess + " registered... (" + process.toString() + ")");
+      sProcess process = (sProcess) processVector.elementAt(currentProcessId);
+      PriorityQueue<sProcess> processHeap = new PriorityQueue<>(
+              Comparator.comparingDouble((sProcess p) -> p.timeEstimate));
+
+      out.println("Process: " + currentProcessId + " registered... (" + process.toString() + ")");
       while (comptime < runtime) {
+        for (i=0; i < size; i++){
+          sProcess processChecking = (sProcess) processVector.elementAt(i);
+          if (processChecking.isBlocked && comptime - processChecking.lastExecTime == processChecking.ioblocking) {
+            processHeap.add(processChecking);
+            processChecking.isBlocked = false;
+          }
+          if (processChecking.arrivedTime == comptime)
+            processHeap.add(processChecking);
+        }
+
         if (process.cpudone == process.cputime) {
           completed++;
-          out.println("Process: " + currentProcess + " completed... (" + process.toString() + ")");
+          out.println("Process: " + currentProcessId + " completed... (" + process.toString() + ")");
           if (completed == size) {
             result.compuTime = comptime;
             out.close();
             return result;
           }
-          for (i = size - 1; i >= 0; i--) {
-            process = (sProcess) processVector.elementAt(i);
-            if (process.cpudone < process.cputime) { 
-              currentProcess = i;
-            }
-          }
-          process = (sProcess) processVector.elementAt(currentProcess);
-          out.println("Process: " + currentProcess + " registered... (" + process.toString() + ")");
+          if (processHeap.size() > 0)
+            process = processHeap.poll();
+          out.println("Process: " + currentProcessId + " registered... (" + process.toString() + ")");
         }      
         if (process.ioblocking == process.ionext) {
-          out.println("Process: " + currentProcess + " I/O blocked... (" + process.toString() + ")");
+          out.println("Process: " + currentProcessId + " I/O blocked... (" + process.toString() + ")");
           process.numblocked++;
-          process.ionext = 0; 
-          previousProcess = currentProcess;
+          process.ionext = 0;
+          process.lastExecTime = comptime;
+          previousProcess = currentProcessId;
           for (i = size - 1; i >= 0; i--) {
             process = (sProcess) processVector.elementAt(i);
             if (process.cpudone < process.cputime && previousProcess != i) { 
-              currentProcess = i;
+              currentProcessId = i;
             }
           }
-          process = (sProcess) processVector.elementAt(currentProcess);
-          out.println("Process: " + currentProcess + " registered... (" + process.toString() + ")");
+          process = (sProcess) processVector.elementAt(currentProcessId);
+          out.println("Process: " + currentProcessId + " registered... (" + process.toString() + ")");
         }        
         process.cpudone++;       
-        if (process.ioblocking > 0) {
+        if (process.ioblocking > 0 && !process.isBlocked) {
           process.ionext++;
         }
         comptime++;
@@ -108,7 +119,6 @@ public class SchedulingAlgorithm {
       }
       prevCpuTime = process.cputime;
       process.priority = index;
-      System.out.println(process.cputime);
     }
   }
 }

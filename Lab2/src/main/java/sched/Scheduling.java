@@ -27,6 +27,8 @@ public class Scheduling {
     String tmp;
     int cputime = 0;
     int ioblocking = 0;
+    int blockingTime = 0;
+    int arrivedTime = 0;
     double X = 0.0;
 
     try {   
@@ -48,6 +50,16 @@ public class Scheduling {
           st.nextToken();
           standardDev = Common.s2i(st.nextToken());
         }
+        if (line.startsWith("blockingTime")) {
+          StringTokenizer st = new StringTokenizer(line);
+          st.nextToken();
+          blockingTime = Common.s2i(st.nextToken());
+        }
+        if (line.startsWith("arrivedTime")) {
+          StringTokenizer st = new StringTokenizer(line);
+          st.nextToken();
+          arrivedTime = Common.s2i(st.nextToken());
+        }
         if (line.startsWith("process")) {
           StringTokenizer st = new StringTokenizer(line);
           st.nextToken();
@@ -58,7 +70,7 @@ public class Scheduling {
           }
           X = X * standardDev;
           cputime = (int) X + meanDev;
-          processVector.addElement(new sProcess(cputime, ioblocking, 0, 0, 0, 0));
+          processVector.addElement(new sProcess(cputime, ioblocking, blockingTime, arrivedTime, 0, 0, 0, 0));
         }
         if (line.startsWith("runtime")) {
           StringTokenizer st = new StringTokenizer(line);
@@ -110,7 +122,7 @@ public class Scheduling {
           }
           X = X * standardDev;
         int cputime = (int) X + meanDev;
-        processVector.addElement(new sProcess(cputime,i*100,0,0,0, 0));
+        processVector.addElement(new sProcess(cputime,i*100, i*100, i*10,0,0,0, 0));
         i++;
       }
     }
